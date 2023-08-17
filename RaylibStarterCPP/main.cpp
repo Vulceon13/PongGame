@@ -37,6 +37,20 @@ void Update()
 
 class Paddle
 {
+protected:
+
+    void LimitMovement()
+    {
+        if (y <= 0)
+        {
+            y = 0;
+        }
+        if (y + height >= GetScreenHeight())
+        {
+            y = GetScreenHeight() - height;
+        }
+    }
+
 public:
     float x, y;
     float width, height;
@@ -58,22 +72,35 @@ public:
         {
             y = y + speed;
         }
-
-        // Checking if the paddle is near the screen 
-        if (y <= 0)
-        {
-            y = 0;
-        }
-        if (y + height >= GetScreenHeight())
-        {
-            y = GetScreenHeight() - height;
-        }
+        LimitMovement();
     }
 
 };
 
+class CpuPaddle : public Paddle
+{
+public:
+    
+    void Update(int ball_y) 
+    {
+        // Making the paddle move up or down depending on where the position of the ball is to the paddle
+        if (y + height / 2 > ball_y)
+        {
+            y = y - speed;
+        }
+        if (y + height / 2 <= ball_y)
+        {
+            y = y + speed;
+        }        
+        LimitMovement();
+
+    }
+};
+
+
 Ball ball;
 Paddle player;
+CpuPaddle cpu;
 
 int main(int argc, char* argv[])
 {
@@ -93,6 +120,12 @@ int main(int argc, char* argv[])
     player.x = screenWidth - player.width - 10;
     player.y = screenHeight/2 - player.height/2;
     player.speed = 6;
+
+    cpu.height = 120;
+    cpu.width = 25;
+    cpu.x = 10;
+    cpu.y = screenHeight / 2 - cpu.height / 2;
+    cpu.speed = 6;
     
     while (!WindowShouldClose())   
     {    
@@ -101,12 +134,13 @@ int main(int argc, char* argv[])
         //Updating
         ball.Update();
         player.Update();
+        cpu.Update(ball.y);
 
         //Drawing
         ClearBackground(BLACK); // Creating Black Background
         DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, WHITE); // Drawing A Halfway Line                
         ball.Draw();
-        DrawRectangle(10, screenHeight/2 - 60, 25, 120, WHITE); // Drawing Left Paddle
+        cpu.Draw();
         player.Draw();
         
         EndDrawing();
