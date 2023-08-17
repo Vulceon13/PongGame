@@ -7,9 +7,9 @@
 class Ball 
 {
 public:
-float x, y;
-int speed_x, speed_y;
-int radius;
+    float x, y;
+    int speed_x, speed_y;
+    int radius;
 
 void Draw() 
 {
@@ -35,7 +35,45 @@ void Update()
 
 };
 
+class Paddle
+{
+public:
+    float x, y;
+    float width, height;
+    int speed;
+
+    void Draw()
+    {
+        DrawRectangle(x, y, width, height, WHITE); // Drawing Right Paddle
+    }
+
+    void Update()
+    {
+        // Adding Button
+        if (IsKeyDown(KEY_UP))
+        {
+            y = y - speed;
+        }
+        if (IsKeyDown(KEY_DOWN))
+        {
+            y = y + speed;
+        }
+
+        // Checking if the paddle is near the screen 
+        if (y <= 0)
+        {
+            y = 0;
+        }
+        if (y + height >= GetScreenHeight())
+        {
+            y = GetScreenHeight() - height;
+        }
+    }
+
+};
+
 Ball ball;
+Paddle player;
 
 int main(int argc, char* argv[])
 {
@@ -46,9 +84,15 @@ int main(int argc, char* argv[])
 
     ball.radius = 20;
     ball.x = screenWidth/2;
-    ball.y = screenHeight / 2;
+    ball.y = screenHeight/2;
     ball.speed_x = 7;
     ball.speed_y = 7;
+
+    player.width = 25;
+    player.height = 120;
+    player.x = screenWidth - player.width - 10;
+    player.y = screenHeight/2 - player.height/2;
+    player.speed = 6;
     
     while (!WindowShouldClose())   
     {    
@@ -56,13 +100,14 @@ int main(int argc, char* argv[])
 
         //Updating
         ball.Update();
+        player.Update();
 
         //Drawing
         ClearBackground(BLACK); // Creating Black Background
         DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, WHITE); // Drawing A Halfway Line                
         ball.Draw();
-        DrawRectangle(10, screenHeight / 2 - 60, 25, 120, WHITE); // Drawing Left Paddle
-        DrawRectangle(screenWidth - 35, screenHeight / 2 - 60, 25, 120, WHITE); // Drawing Right Paddle
+        DrawRectangle(10, screenHeight/2 - 60, 25, 120, WHITE); // Drawing Left Paddle
+        player.Draw();
         
         EndDrawing();
        
