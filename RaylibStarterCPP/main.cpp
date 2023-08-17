@@ -136,6 +136,16 @@ int main(int argc, char* argv[])
         player.Update();
         cpu.Update(ball.y);
 
+        // Ball and Paddle Collision Check
+        if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, Rectangle{player.x, player.y, player.width, player.height} ))
+        {
+            ball.speed_x *= -1;
+        }
+        if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, Rectangle{cpu.x, cpu.y, cpu.width, cpu.height } ))
+        {
+            ball.speed_x *= -1;
+        }
+
         //Drawing
         ClearBackground(BLACK); // Creating Black Background
         DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, WHITE); // Drawing A Halfway Line                
